@@ -146,9 +146,30 @@
 		ajax(
 			'aiisp_set_featured',
 			{ post_id: aiispData.postId || 0, attachment_id: lastAttachmentId },
-			function () {
+			function ( data ) {
 				$btn.prop( 'disabled', false ).find( '~ span' ).remove();
 				$btn.text( i18n.featuredSet );
+
+				// Live-update the editor's Featured Image panel so the
+				// change is visible immediately, without a refresh.
+				var attId = parseInt( ( data && data.attachment_id ) || lastAttachmentId, 10 );
+				var isBlockEditor = document.body && document.body.classList.contains( 'block-editor-page' );
+
+				if ( isBlockEditor && window.wp && wp.data && wp.data.dispatch ) {
+					// Block editor: update the store so the sidebar
+					// panel redraws with the new image.
+					try {
+						wp.data.dispatch( 'core/editor' ).editPost( { featured_media: attId } );
+					} catch ( e ) { /* store unavailable — DB is already correct */ }
+				} else if ( window.WPSetThumbnailHTML && data && data.thumbnail_html ) {
+					// Classic editor: swap core's server-rendered
+					// Featured Image box (includes the hidden
+					// _thumbnail_id field, so saving keeps it).
+					window.WPSetThumbnailHTML( data.thumbnail_html );
+					if ( window.WPSetThumbnailID ) {
+						window.WPSetThumbnailID( attId );
+					}
+				}
 			},
 			function ( message ) {
 				$btn.prop( 'disabled', false );

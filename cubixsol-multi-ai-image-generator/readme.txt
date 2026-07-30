@@ -4,7 +4,7 @@ Tags: ai, image generation, featured image, stock photos
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -151,6 +151,9 @@ Yes — engines, stock sources, and style presets are all registries with public
 
 == Changelog ==
 
+= 1.0.5 =
+* The Featured Image panel now updates instantly in both the block editor and the Classic Editor when an image is set as featured — previously the Classic Editor required a page refresh before the new featured image appeared
+
 = 1.0.4 =
 * Ideogram key testing is now definitive: the Test button performs one minimal Turbo generation (disclosed on the engine card), so invalid keys show a clear rejection, unfunded accounts show a clear no-credits notice, and results always match what generation reports
 
@@ -177,6 +180,9 @@ Yes — engines, stock sources, and style presets are all registries with public
 * Dashboard with daily usage, statistics, and generation history
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+Fixes the Featured Image panel not updating live in the Classic Editor.
 
 = 1.0.4 =
 Makes Ideogram key testing definitive and consistent with generation errors.

@@ -295,7 +295,20 @@ class Ajax {
 			wp_send_json_error( array( 'message' => esc_html__( 'WordPress refused to set the featured image.', 'cubixsol-multi-ai-image-generator' ) ) );
 		}
 
-		wp_send_json_success( array( 'message' => esc_html__( 'Featured image set.', 'cubixsol-multi-ai-image-generator' ) ) );
+		$response = array(
+			'message'       => esc_html__( 'Featured image set.', 'cubixsol-multi-ai-image-generator' ),
+			'attachment_id' => $attachment_id,
+		);
+
+		// The Classic Editor's Featured Image box is server-rendered
+		// and does not react to AJAX changes, so the refreshed box
+		// markup is returned for the JS to swap in live. (The block
+		// editor is updated client-side via its data store instead.)
+		if ( function_exists( '_wp_post_thumbnail_html' ) ) {
+			$response['thumbnail_html'] = _wp_post_thumbnail_html( $attachment_id, $post_id );
+		}
+
+		wp_send_json_success( $response );
 	}
 
 	/* ---------------------------------------------------------------------
