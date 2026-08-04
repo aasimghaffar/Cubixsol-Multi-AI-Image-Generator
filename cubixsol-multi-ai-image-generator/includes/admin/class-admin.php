@@ -40,6 +40,34 @@ class Admin {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'admin_notices', array( $this, 'missing_key_notice' ) );
+		add_filter( 'plugin_action_links_' . AIISP_PLUGIN_BASENAME, array( $this, 'plugin_action_links' ) );
+	}
+
+	/**
+	 * Add quick links to the plugin's row on the Plugins screen so
+	 * admins can jump straight to Settings (or the Workspace)
+	 * without hunting through the menu.
+	 *
+	 * @param string[] $links Existing action links (Deactivate, ...).
+	 * @return string[]
+	 */
+	public function plugin_action_links( $links ) {
+		$custom = array(
+			'aiisp_settings'  => sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( admin_url( 'admin.php?page=aiisp-settings' ) ),
+				esc_html__( 'Settings', 'cubixsol-multi-ai-image-generator' )
+			),
+			'aiisp_workspace' => sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( admin_url( 'upload.php?page=aiisp-studio' ) ),
+				esc_html__( 'Image Workspace', 'cubixsol-multi-ai-image-generator' )
+			),
+		);
+
+		// Custom links first, core links (Deactivate) after — the
+		// convention core plugins follow.
+		return array_merge( $custom, $links );
 	}
 
 	/**
