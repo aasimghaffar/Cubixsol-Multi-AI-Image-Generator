@@ -139,6 +139,14 @@ $aiisp_avatar_index = 0;
 						<?php esc_html_e( 'Works instantly — no account or key needed', 'cubixsol-multi-ai-image-generator' ); ?>
 					</span>
 				<?php endif; ?>
+
+				<?php $aiisp_notice = $aiisp_provider->get_notice(); ?>
+				<?php if ( '' !== $aiisp_notice ) : ?>
+					<p class="aiisp-engine-note">
+						<span class="dashicons dashicons-info-outline"></span>
+						<span><?php echo esc_html( $aiisp_notice ); ?></span>
+					</p>
+				<?php endif; ?>
 			</label>
 		<?php endforeach; ?>
 	</div>

@@ -5,7 +5,7 @@
  * Plugin Name:       Cubixsol Multi AI Image Generator
  * Plugin URI:        https://cubixsol.com/products/
  * Description:       Generate AI images with 9 engines (Pollinations FREE, OpenAI, Gemini, Grok, Stability, FLUX, Leonardo, Ideogram, DeepAI), stock photo search, SEO automation, auto-fallback and bulk generation.
- * Version:           1.0.6
+ * Version:           1.0.7
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Cubixsol
@@ -55,7 +55,7 @@ if ( defined( 'AIISP_VERSION' ) ) {
  * -------------------------------------------------------------------------
  */
 
-define( 'AIISP_VERSION', '1.0.6' );
+define( 'AIISP_VERSION', '1.0.7' );
 define( 'AIISP_PLUGIN_FILE', __FILE__ );
 define( 'AIISP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AIISP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

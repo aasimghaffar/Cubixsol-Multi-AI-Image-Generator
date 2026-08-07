@@ -4,7 +4,7 @@ Tags: ai, image generation, featured image, stock photos, seo automation
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -132,9 +132,15 @@ Yes. The plugin is explicitly built to be extended. Engines, asset sources, and 
 
 == Changelog ==
 
+= 1.0.7 =
+* Added a clear advisory on the Pollinations.ai engine card explaining that free shared capacity can be briefly busy, with guidance to retry shortly or switch engines.
+* Pollinations.ai failures now return actionable messages (busy service, timeout, or non-image response) instead of raw status codes, and point to Automatic Fallback.
+
 = 1.0.6 =
 * Added quick-access Settings and Image Workspace links directly on the Plugins screen row for one-click navigation.
 * Plugin and author homepage links now route to the official Cubixsol products directory.
+* Key verification now reads each provider's own error payload, so engines that report invalid credentials with a non-standard status (such as Google Gemini's HTTP 400 API_KEY_INVALID) return a definitive rejection instead of an inconclusive notice.
+* Together AI (FLUX) calls now target the current api.together.ai host, restoring compatibility with project-scoped API keys issued by the Together console.
 
 = 1.0.5 =
 * Resolved structural synchronization bugs where the Classic Editor required hard page reloads to show successful featured image bindings. Layout fields now update instantly across all editor frameworks.

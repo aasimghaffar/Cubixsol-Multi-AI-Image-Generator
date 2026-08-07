@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Flux extends Provider_Base {
 
 	/** API endpoint. */
-	const ENDPOINT = 'https://api.together.xyz/v1/images/generations';
+	const ENDPOINT = 'https://api.together.ai/v1/images/generations';
 
 	/** {@inheritDoc} */
 	public function get_slug() {
@@ -99,7 +99,7 @@ class Flux extends Provider_Base {
 	 */
 	protected function verify_credentials() {
 		return $this->auth_probe(
-			'https://api.together.xyz/v1/models',
+			'https://api.together.ai/v1/models',
 			array( 'Authorization' => 'Bearer ' . $this->get_api_key() )
 		);
 	}

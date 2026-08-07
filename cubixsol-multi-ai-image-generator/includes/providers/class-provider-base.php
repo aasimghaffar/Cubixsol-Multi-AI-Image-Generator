@@ -175,13 +175,62 @@ abstract class Provider_Base {
 			return true;
 		}
 
+		// Read the provider's own explanation: several APIs report an
+		// invalid key with a status OTHER than 401/403 (Google returns
+		// HTTP 400 with API_KEY_INVALID), so the status alone is not
+		// enough to tell "bad key" from "bad request".
+		$body   = (string) wp_remote_retrieve_body( $response );
+		$detail = $this->extract_error_message( json_decode( $body, true ) );
+		$haystack = strtolower( $body );
+
+		$invalid_signals = array(
+			'api_key_invalid',
+			'api key not valid',
+			'invalid api key',
+			'invalid_api_key',
+			'incorrect api key',
+			'invalid authentication',
+			'invalid token',
+			'api key expired',
+			'unauthorized',
+		);
+
+		foreach ( $invalid_signals as $signal ) {
+			if ( false !== strpos( $haystack, $signal ) ) {
+				return new WP_Error(
+					'aiisp_test_invalid',
+					sprintf(
+						/* translators: 1: provider label, 2: provider's own message */
+						__( '%1$s rejected this key: %2$s', 'cubixsol-multi-ai-image-generator' ),
+						$this->get_label(),
+						$detail
+					)
+				);
+			}
+		}
+
 		if ( 401 === $code || 403 === $code ) {
 			return new WP_Error(
 				'aiisp_test_invalid',
+				trim(
+					sprintf(
+						/* translators: %s: provider label */
+						__( '%s rejected this key (unauthorized).', 'cubixsol-multi-ai-image-generator' ),
+						$this->get_label()
+					) . ' ' . $detail
+				)
+			);
+		}
+
+		// Billing problems mean the key itself was accepted.
+		if ( 402 === $code || false !== strpos( $haystack, 'insufficient' ) ) {
+			return new WP_Error(
+				'aiisp_test_inconclusive',
 				sprintf(
-					/* translators: %s: provider label */
-					__( '%s rejected this key (unauthorized).', 'cubixsol-multi-ai-image-generator' ),
-					$this->get_label()
+					/* translators: 1: provider label, 2: provider's own message */
+					__( '%1$s accepted the key, but the account cannot generate yet: %2$s', 'cubixsol-multi-ai-image-generator' ),
+					$this->get_label(),
+					$detail
 				)
 			);
 		}
@@ -192,11 +241,13 @@ abstract class Provider_Base {
 
 		return new WP_Error(
 			'aiisp_test_inconclusive',
-			sprintf(
-				/* translators: 1: provider label, 2: HTTP status */
-				__( '%1$s does not allow confirming a key without running a real generation (probe returned HTTP %2$d). The key was NOT validated — it will be checked on your first generation.', 'cubixsol-multi-ai-image-generator' ),
-				$this->get_label(),
-				$code
+			trim(
+				sprintf(
+					/* translators: 1: provider label, 2: HTTP status */
+					__( '%1$s did not confirm the key (probe returned HTTP %2$d). It will be checked on your first generation.', 'cubixsol-multi-ai-image-generator' ),
+					$this->get_label(),
+					$code
+				) . ' ' . $detail
 			)
 		);
 	}
@@ -327,6 +378,17 @@ abstract class Provider_Base {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Optional advisory shown on the engine's settings card — used to
+	 * set expectations about an engine's reliability or cost before
+	 * an admin relies on it. Empty for engines that need no notice.
+	 *
+	 * @return string
+	 */
+	public function get_notice() {
+		return '';
 	}
 
 	/**
