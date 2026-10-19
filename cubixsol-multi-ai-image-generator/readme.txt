@@ -87,11 +87,27 @@ Data payloads transmitted to stock indexes are limited to user-supplied search s
 
 == Installation ==
 
-1. From the WordPress administration panel, navigate to **Plugins → Add New**. Search for "Cubixsol Multi AI Image Generator" and click **Install Now** (alternatively, upload the compiled plugin file via **Upload Plugin**).
-2. Click **Activate**.
-3. Launch the dedicated **AI Image Workspace** from your dashboard menu. Core functionality through Pollinations.ai is operational immediately.
-4. (Optional) Access the **AI Engines** management interface to input API credentials for desired premium engines, leveraging the integrated **Test** feature to confirm connectivity.
-5. Set operational post types within the **Post Types** configuration tab to initialize the workflow sidebars.
+**Requirements:** WordPress 6.2 or higher, PHP 7.4 or higher, and outbound HTTPS access from your server to the engine/stock APIs you enable.
+
+= Automatic installation =
+
+1. In your WordPress admin, go to **Plugins → Add New Plugin**.
+2. Search for "Cubixsol Multi AI Image Generator" and click **Install Now**.
+3. Click **Activate**.
+
+= Manual installation =
+
+1. Download the plugin `.zip` file.
+2. Go to **Plugins → Add New Plugin → Upload Plugin**, choose the file and click **Install Now** — or extract the archive and upload the `cubixsol-multi-ai-image-generator` folder to `/wp-content/plugins/` via FTP/SFTP.
+3. Activate the plugin from the **Plugins** screen.
+
+= First-time setup =
+
+1. Open **AI Image Workspace** in the admin sidebar (also reachable from the **Settings** link on the Plugins screen). Pollinations.ai works immediately — no key required.
+2. (Optional) On the **AI Engines** tab, paste API keys for any premium engines, click **Test** to verify each one, pick your active engine and drag the fallback order. Stock-library keys (Pexels, Pixabay, Unsplash, Giphy) are entered on the same tab; Openverse needs none.
+3. On the **Media & SEO** tab, set the default image size, style preset, daily generation limit, Prompt Booster text and filename/alt-text patterns.
+4. On the **Post Types** tab, choose which post types show the generator panel and appear in Bulk Generate.
+5. Start generating: use the **Cubixsol Multi AI Image Generator** panel in the post editor, the **Media → AI Image Workspace** screen, or the **Bulk Generate** tab.
 
 == Frequently Asked Questions ==
 
@@ -110,8 +126,28 @@ The test interface initiates a minimal query to the platform's authentication se
 = How does the automatic failover system handle provider outages? =
 If your active engine encounters a structural error or experiences timeout intervals, the plugin automatically falls back down your defined priority stack to process the request seamlessly. Every failover event is captured and indexed on the administration dashboard for architectural review.
 
+= Where do I find the image generator? =
+In three places: the **Cubixsol Multi AI Image Generator** panel on the edit screen of every enabled post type (Block Editor and Classic Editor), the **Media → AI Image Workspace** screen, and the **Bulk Generate** tab under **AI Image Workspace** in the admin sidebar.
+
+= Who can use the plugin? =
+Plugin settings and API keys are restricted to Administrators (`manage_options`). Generating and importing images requires the `upload_files` capability, and attaching a featured image requires permission to edit that specific post.
+
+= Why is the generator panel missing from my post editor? =
+The panel only appears on post types enabled under **AI Image Workspace → Post Types**. Posts and Pages are enabled by default.
+
+= What happens when the daily generation limit is reached? =
+Generation pauses site-wide until the counter resets the next day. Raise or lower the limit under **Media & SEO**; current usage is shown on the Dashboard tab.
+
+= Does uninstalling remove all plugin data? =
+Yes. Deleting the plugin from the Plugins screen removes its settings, stored API keys, usage counter and generation history table. Images already saved to your Media Library are kept. Deactivating alone keeps your settings.
+
 = Can developers hook custom logic or models into this setup? =
-Yes. The plugin is explicitly built to be extended. Engines, asset sources, and style lists are built on standard registries. By binding custom classes to `aiisp_register_providers`, teams can easily add proprietary models or customized internal API connections without modifying the core files.
+Yes. The plugin is explicitly built to be extended. Engines, asset sources, and style lists are built on standard registries. By binding custom classes to `aiisp_register_providers`, teams can easily add proprietary models or customized internal API connections without modifying the core files. Available hooks:
+
+* `aiisp_register_providers` (action) — register an AI engine (a class extending `AIISP\Providers\Provider_Base`).
+* `aiisp_register_stock_sources` (action) — register a stock source (a class extending `AIISP\Providers\Stock\Stock_Base`).
+* `aiisp_style_presets` (filter) — add, remove or rename style presets.
+* `aiisp_options_schema` (filter) — add custom settings fields that save and sanitize automatically.
 
 == Screenshots ==
 
@@ -130,6 +166,17 @@ Yes. The plugin is explicitly built to be extended. Engines, asset sources, and 
 13. Document-Bound Stock Search — thumbnail asset integration including automated ingestion and attribution mapping.
 14. Style Preset Catalog — comprehensive catalog showcasing all 23 built-in artistic style configurations.
 
+== Upgrade Notice ==
+
+= 1.0.7 =
+Clearer Pollinations.ai error messages and a busy-service advisory on the engine card. Recommended for all users.
+
+= 1.0.6 =
+Restores FLUX (Together AI) compatibility with project-scoped keys and fixes Gemini key verification. Recommended for all users.
+
+= 1.0.3 =
+Required for OpenAI: switches to the `gpt-image-2` model after OpenAI retired DALL·E from the API.
+
 == Changelog ==
 
 = 1.0.7 =
@@ -146,7 +193,7 @@ Yes. The plugin is explicitly built to be extended. Engines, asset sources, and 
 * Resolved structural synchronization bugs where the Classic Editor required hard page reloads to show successful featured image bindings. Layout fields now update instantly across all editor frameworks.
 
 = 1.0.4 =
-* Standardized Ideogram diagnostic patterns. The verification routine now processes an operational low-cost micro-generation task to reliably surfaces hidden engine errors, expired credit accounts, or malformed credentials.
+* Standardized Ideogram diagnostic patterns. The verification routine now processes an operational low-cost micro-generation task to reliably surface hidden engine errors, expired credit accounts, or malformed credentials.
 
 = 1.0.3 =
 * Deprecated legacy OpenAI structures in favor of `gpt-image-2` integration following provider API adjustments (May 12, 2026). Updated global dimension validation sets.
